@@ -1,6 +1,13 @@
 # Mac OS specific
 .DS_Store
 
+# Data folder ()
+data/
+
+# The callapi.py file is just in case callreq.py ceases to work due to dynamic page loading
+src/callapi.py
+
+
 
 
 # Byte-compiled / optimized / DLL files
