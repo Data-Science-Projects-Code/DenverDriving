@@ -1,19 +1,19 @@
-# Denver-traffic-accidents
-
+# DenverDriving
 Project Description: This is an end-to-end project. It gets data from [City of Denver Open Data Catalog](http://data.denvergov.org) does some processing of the data, and uploads the data to Kaggle as the [Denver Traffic Accidents dataset](https://www.kaggle.com/datasets/hrokrin/denver-traffic-accidents).
 
-Quick note: I'm expanding the project a bit but I haven't finalized how updating will work. I may go with a GitHub action as before but I think I may go with Airflow and Docker. The display is also up in the air. I'll leave Jupyter notebooks as an option but, depending on hosting options, I think Panel looks attractive.
-
+Quick note: I'm expanding the project but haven't finalized how updating will work. I may go with a GitHub Action but might additionally layer in Airflow and Docker. The display is also up in the air. I'll leave Jupyter notebooks as an option but, depending on hosting options, I think Panel looks attractive.
+<br><br> 
 
 ## Table of Contents
 - [Project Description](#project-description)
 - [Discussion](#discussion)
 - [Takeaways from the Sample EDA Notebook ](#takeaways-from-the-sample-eda-notebook)
+- [Project Status](#project-status)
 <br><br> 
 
 Project layout: 
  - `notebooks` folder with `EDA` and `Munging the data` notebooks
- - `images` folder with images for both kaggle and GitHub
+ - `images` folder with images for both Kaggle and GitHub
  -  `src` folder with the contents of the munging notebook modified for production
    
 [Top ](#table-of-contents)
@@ -26,7 +26,7 @@ Project layout:
 <br><br>
 
 ## Takeaways from the Sample EDA Notebook 
-Kaggle wants an EDA notebook included with submissions for the dataset to get a perfect rating. I find this annoying as what gets passed off as EDA is often just the output of generic, minimal script (df.head, df.shape, df.describe, etc). I try to put a bit more thought into it but I don't live in Denver and haven't been there since I was did a datascience program there. So I don't really have much at stake but I also don't have much local knowledge that could be the basis of deeper insights. I went with questions I wanted the answers to but more as a way of displaying data rather than telling a story with data.  
+Kaggle wants an EDA notebook included with submissions for the dataset to get a perfect rating. I find this annoying as what gets passed off as EDA is often just the output of a generic, minimal script (head(), shape(), describe(), etc). I try to put more thought into it but I don't live in Denver and haven't been there since I was there for a data science program. So I don't have much at stake but I also don't have any local knowledge that could be the basis of deeper insights. I went with questions I wanted the answers to but more as a way of displaying data rather than telling a story with data.  
 
 Still, there are a few takeaways.
 
@@ -42,7 +42,7 @@ Still, there are a few takeaways.
 
 <br>
 
-3. Ruling out non-causes such at "No Apparent", "Other" and "Pending Investigation and/or Court Hearing" we can see aggressive and distracted driving are major issues. Notably, cellphones are smaller than what one might expect.
+3. Ruling out non-causes such as "No Apparent", "Other" and "Pending Investigation and/or Court Hearing" we can see aggressive and distracted driving are major issues. Notably, cell phones are smaller than what one might expect.
 
 ![Accidents by Factor](images/AccidentsByFactor.png "Accidents by Factor")
 
@@ -58,5 +58,11 @@ Still, there are a few takeaways.
  5. There is a slight degree of seasonality. This is also seen in the monthly chart above, which aggregates the 10 years.
 
 ![Slight seasonality present](images/Seasonality.png "Slight seasonality present")
+[Top ](#table-of-contents)
+<br><br>
+
+## Project status
+1. Kaggle: Dataset and accompanying notebook uploaded with infrequent updates
+2. GitHub: Expanding and refactoring
 
 [Top ](#table-of-contents)
