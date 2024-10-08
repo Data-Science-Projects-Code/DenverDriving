@@ -12,9 +12,14 @@ Quick note: I'm expanding the project but haven't finalized how updating will wo
 <br><br> 
 
 Project layout: 
- - `notebooks` folder with `EDA` and `Munging the data` notebooks
+ -  `src` folder 
+    - `callreq.py` - downloads csv of all data with requests
+    - `pipeline.py` - transfrorms data
+ - `notebooks` folder with:
+   - `Denver_Traffic_Accidents_All_In_One` 
+   - `Denver_Traffic_Accidents_Data_Display` notebooks
  - `images` folder with images for both Kaggle and GitHub
- -  `src` folder with the contents of the munging notebook modified for production
+ - `tests` folder   
    
 [Top ](#table-of-contents)
 <br><br> 
