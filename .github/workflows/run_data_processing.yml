@@ -11,7 +11,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -24,13 +24,25 @@ jobs:
         pip install -r requirements.txt
 
     - name: Pull data
-      run: python callreq.py
+      run: python src/callreq.py
 
     - name: Process data
-      run: python processing.py
+      run: python src/processing.py
 
     - name: Run tests
       run: pytest tests/
+
+    - name: Commit and push the processed data
+      if: success() 
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+        git add data/
+        git diff --quiet && git diff --staged --quiet || git commit -m "Update processed data on $(date +'%Y-%m-%d %H:%M:%S')"
+        git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
     - name: Save to Kaggle
       env:
