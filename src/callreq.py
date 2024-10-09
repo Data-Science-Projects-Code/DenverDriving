@@ -11,7 +11,7 @@ response = requests.get(url)
 
 # Save the file locally
 if response.status_code == 200:
-    with open("../data/traffic_accidents.csv", "wb") as f:
+    with open("../data/denver_accidents.csv", "wb") as f:
         f.write(response.content)
     print("File downloaded successfully!")
 else:
