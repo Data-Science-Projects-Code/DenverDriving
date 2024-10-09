@@ -1,4 +1,4 @@
-kaggle=1.6.17
+kaggle==1.6.17
 missingno==0.5.2
 matplotlib==3.9.2
 numpy==2.1.0
