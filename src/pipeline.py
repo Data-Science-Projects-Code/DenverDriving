@@ -82,7 +82,7 @@ def convert_to_datetime(df):
 
 
 def clean_data(df):
-    """Performs data cleaning operations on specific columns."""
+    """Drop rows with missing Geo_Lon and/or Geo_Lat rows"""
     df.dropna(subset=["Geo_Lon", "Geo_Lat"], axis=0, inplace=True)
     df["Top_Traffic_Accident_Offense"] = (
         df["Top_Traffic_Accident_Offense"].str.rstrip().replace("TRAF - ", "")

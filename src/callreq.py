@@ -14,17 +14,21 @@ ACCIDENTS_URL = "https://services1.arcgis.com/zdB7qR0BtYrg0Xpl/arcgis/rest/servi
 def setup_logging():
     """Setup logging to file and console."""
     os.makedirs(DATA_DIR, exist_ok=True)
+
     logging.basicConfig(
         filename=LOG_FILE,
         filemode="a",
         format="%(asctime)s - %(levelname)s - %(message)s",
         level=logging.INFO,
     )
+
     console = logging.StreamHandler()
     console.setLevel(logging.INFO)
     formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
     console.setFormatter(formatter)
     logging.getLogger().addHandler(console)
+
+    logging.info("Logging setup complete.")
 
 
 def ensure_data_directory_exists():
@@ -44,14 +48,17 @@ def fetch_accident_data() -> pd.DataFrame:
     """Download accident data from the provided URL and return as a DataFrame."""
     try:
         headers = {"Cache-Control": "no-cache"}
-        logging.debug(f"Attempting to download data from {ACCIDENTS_URL}")
+        logging.info(f"Attempting to download data from {ACCIDENTS_URL}")
         response = requests.get(ACCIDENTS_URL, headers=headers)
         response.raise_for_status()
         logging.info("Denver accident data downloaded successfully.")
 
         # Read the downloaded data into a DataFrame
         df = pd.read_csv(pd.compat.StringIO(response.text))
-        logging.debug(f"Downloaded data columns: {df.columns.tolist()}")
+        logging.info(
+            f"Data successfully read into DataFrame with columns: {
+                df.columns.tolist()}"
+        )
         return df
     except RequestException as req_err:
         logging.error(f"Error fetching accident data: {req_err}")
@@ -82,8 +89,10 @@ def main():
     except Exception as e:
         logging.error(
             f"An unexpected error occurred during data processing: {e}")
+        logging.error("Process terminated due to the error.")
     logging.info("Data processing script completed successfully.")
 
 
 if __name__ == "__main__":
     main()
+
