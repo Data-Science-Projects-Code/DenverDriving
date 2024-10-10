@@ -31,7 +31,7 @@ jobs:
       run: python src/callreq.py
 
     - name: Process data
-        run: python src/pipeline.py
+      run: python src/pipeline.py
 
     - name: Run tests
       run: pytest tests/
