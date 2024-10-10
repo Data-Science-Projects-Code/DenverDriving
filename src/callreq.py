@@ -11,11 +11,11 @@ logging.basicConfig(
     filename=log_file,
     filemode="a",
     format="%(asctime)s - %(levelname)s - %(message)s",
-    level=logging.INFO,
+    level=logging.DEBUG,  # Changed to DEBUG to capture more detailed logs
 )
 
 console = logging.StreamHandler()
-console.setLevel(logging.INFO)
+console.setLevel(logging.DEBUG)
 formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 console.setFormatter(formatter)
 logging.getLogger().addHandler(console)
@@ -30,11 +30,15 @@ def create_data_directory(directory: str) -> None:
     """
     Create the data directory if it doesn't exist.
     """
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-        logging.info(f"Created directory: {directory}")
-    else:
-        logging.info(f"Directory already exists: {directory}")
+    try:
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+            logging.info(f"Created directory: {directory}")
+        else:
+            logging.info(f"Directory already exists: {directory}")
+    except Exception as e:
+        logging.error(f"Failed to create directory {directory}: {e}")
+        raise
 
 
 def fetch_accident_data() -> pd.DataFrame:
@@ -43,6 +47,7 @@ def fetch_accident_data() -> pd.DataFrame:
     """
     try:
         headers = {"Cache-Control": "no-cache"}
+        logging.debug(f"Attempting to download data from {ACCIDENTS_URL}")
         response = requests.get(ACCIDENTS_URL, headers=headers)
         response.raise_for_status()
         logging.info("Denver accident data downloaded successfully.")
@@ -50,7 +55,12 @@ def fetch_accident_data() -> pd.DataFrame:
             response.content.decode("utf-8")
         )  # Load the CSV data into a DataFrame
     except RequestException as req_err:
-        logging.error(f"Error fetching accident data: {req_err}")
+        logging.error(f"Error fetching accident data from {
+                      ACCIDENTS_URL}: {req_err}")
+        raise
+    except Exception as e:
+        logging.error(
+            f"An unexpected error occurred while downloading data: {e}")
         raise
 
 
@@ -60,6 +70,7 @@ def save_accident_data(df: pd.DataFrame, directory: str, file_name: str) -> None
     """
     file_path = os.path.join(directory, file_name)
     try:
+        logging.debug(f"Attempting to save data to {file_path}")
         df.to_csv(file_path, index=False)
         logging.info(f"Data saved successfully to {file_path}")
     except Exception as e:
