@@ -1,6 +1,5 @@
 name: Data Pipeline
 
-
 on:
   push:
     branches:
@@ -14,50 +13,57 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.12'
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-    - name: Pull data
-      run: python src/callreq.py
+      - name: Pull data
+        run: python src/callreq.py
 
-    - name: Process data
-      run: python src/pipeline.py
+      - name: Process data
+        run: python src/pipeline.py
 
-    - name: Run tests
-      run: pytest tests/
-  
-    - name: Commit and push the processed data
-      if: success() 
-      run: |
-        git config --global user.name "GitHub Actions"
-        git config --global user.email "actions@github.com"
-        git add data/denver_accidents.csv
-        git diff --quiet && git diff --staged --quiet || git commit -m "Update processed data on $(date +'%Y-%m-%d %H:%M:%S')"
-        git push
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run tests
+        run: pytest tests/
 
+      - name: Commit and push the processed data
+        if: success() 
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add data/denver_accidents.csv
+          git diff --quiet && git diff --staged --quiet || git commit -m "Update processed data on $(date +'%Y-%m-%d %H:%M:%S')"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Save to Kaggle
-      env:
-        KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
-        KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
-      run: |
-        kaggle datasets version -p ../data -m "Updated data"
+      - name: Save to Kaggle
+        if: success() 
+        env:
+          KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+          KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+        run: |
+          kaggle datasets version -p ../data -m "Updated data"
 
-    - name: Notify Slack
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-      run: |
-        curl -X POST -H 'Content-type: application/json' --data '{"text":"Data pipeline completed successfully!"}' $SLACK_WEBHOOK_URL
+      - name: Notify Slack
+        if: success() 
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"Data pipeline completed successfully!"}' $SLACK_WEBHOOK_URL
+
+      - name: Display Logs on Failure
+        if: failure()
+        run: |
+          echo "Process failed. Displaying log file:"
+          cat data_processing.log
 
