@@ -26,11 +26,20 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Create Data Directory if it Doesn't Exist
+        run: if [ ! -d "data" ]; then mkdir -p data; fi
+
       - name: Pull data
         run: python src/callreq.py
 
       - name: Process data
         run: python src/pipeline.py
+
+      - name: Display log file in case of failure
+        if: failure()
+        run: |
+          echo "Process failed. Displaying log file:"
+          cat data/data_processing.log
 
       - name: Run tests
         run: pytest tests/
