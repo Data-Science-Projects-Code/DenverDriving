@@ -62,8 +62,8 @@ def main():
     logging.info("Data processing script started.")
 
     try:
-        quakes = fetch_accident_data()
-        save_acident_data(quakes)
+        denver_accidents = fetch_accident_data()
+        save_acident_data(denver_accidents)
     except FileNotFoundError as fnf_error:
         logging.error(f"File not found: {fnf_error}")
         sys.exit(1)
@@ -72,7 +72,7 @@ def main():
         sys.exit(1)
 
     logging.info("Data processing script completed successfully.")
-    print("Data downloaded, cleaned, and saved as parquet files.")
+    print("Data downloaded and saved as csv file.")
 
 
 if __name__ == "__main__":
