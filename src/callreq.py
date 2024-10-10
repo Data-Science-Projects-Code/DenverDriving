@@ -1,8 +1,9 @@
-import os
 import logging
+import os
 import sys
 import requests
 import pandas as pd
+from datetime import datetime, timezone
 from requests.exceptions import RequestException
 
 # Set up logging (file + console)
@@ -11,7 +12,7 @@ logging.basicConfig(
     filename=log_file,
     filemode="a",
     format="%(asctime)s - %(levelname)s - %(message)s",
-    level=logging.DEBUG,  # Changed to DEBUG to capture more detailed logs
+    level=logging.DEBUG,  # Changed to DEBUG to capture more details
 )
 
 console = logging.StreamHandler()
@@ -22,84 +23,61 @@ logging.getLogger().addHandler(console)
 
 # Constants for directories and URLs
 DATA_DIR = "data"
-FILE_NAME = "denver_accidents.csv"
+ACCIDENTS_FILE = "denver_accidents.csv"
 ACCIDENTS_URL = "https://services1.arcgis.com/zdB7qR0BtYrg0Xpl/arcgis/rest/services/ODC_CRIME_TRAFFICACCIDENTS5YR_P/FeatureServer/replicafilescache/ODC_CRIME_TRAFFICACCIDENTS5YR_P_1817589215432503270.csv"
 
 
-def create_data_directory(directory: str) -> None:
+def fetch_accident_data() -> bytes:
     """
-    Create the data directory if it doesn't exist.
-    """
-    try:
-        if not os.path.exists(directory):
-            os.makedirs(directory)
-            logging.info(f"Created directory: {directory}")
-        else:
-            logging.info(f"Directory already exists: {directory}")
-    except Exception as e:
-        logging.error(f"Failed to create directory {directory}: {e}")
-        raise
-
-
-def fetch_accident_data() -> pd.DataFrame:
-    """
-    Fetch accident data from the specified URL.
+    Fetch accident data from the specified URL and return it as bytes.
+    Raises an exception if the data cannot be fetched.
     """
     try:
         headers = {"Cache-Control": "no-cache"}
         logging.debug(f"Attempting to download data from {ACCIDENTS_URL}")
-        response = requests.get(ACCIDENTS_URL, headers=headers)
-        response.raise_for_status()
+        response = requests.get(ACCIDENTS_URL, headers=headers, stream=True)
+        response.raise_for_status()  # Raise an HTTPError for bad responses
         logging.info("Denver accident data downloaded successfully.")
-        return pd.read_csv(
-            response.content.decode("utf-8")
-        )  # Load the CSV data into a DataFrame
+        return response.content
     except RequestException as req_err:
-        logging.error(f"Error fetching accident data from {
-                      ACCIDENTS_URL}: {req_err}")
+        logging.error(f"Error fetching accident data: {req_err}")
         raise
+
+
+def save_accident_data(file_content: bytes) -> None:
+    """
+    Save the accident data to a CSV file within the data directory.
+    Creates the data directory if it does not exist.
+    """
+    try:
+        # Ensure the data directory exists
+        if not os.path.exists(DATA_DIR):
+            os.makedirs(DATA_DIR)
+            logging.info(f"Created directory: {DATA_DIR}")
+
+        file_path = os.path.join(DATA_DIR, ACCIDENTS_FILE)
+        with open(file_path, "wb") as file:
+            file.write(file_content)
+        logging.info(f"Data successfully saved to {file_path}")
+
     except Exception as e:
         logging.error(
-            f"An unexpected error occurred while downloading data: {e}")
-        raise
-
-
-def save_accident_data(df: pd.DataFrame, directory: str, file_name: str) -> None:
-    """
-    Save the accident data DataFrame to a CSV file.
-    """
-    file_path = os.path.join(directory, file_name)
-    try:
-        logging.debug(f"Attempting to save data to {file_path}")
-        df.to_csv(file_path, index=False)
-        logging.info(f"Data saved successfully to {file_path}")
-    except Exception as e:
-        logging.error(f"Error saving data to {file_path}: {e}")
+            f"An unexpected error occurred while saving the data: {e}")
         raise
 
 
 def main():
     logging.info("Data processing script started.")
-
     try:
-        # Ensure the data directory exists
-        create_data_directory(DATA_DIR)
+        # Fetch and save the accident data
+        accident_data = fetch_accident_data()
+        save_accident_data(accident_data)
 
-        # Fetch accident data
-        denver_accidents = fetch_accident_data()
-
-        # Save the data to the CSV file in the data directory
-        save_accident_data(denver_accidents, DATA_DIR, FILE_NAME)
-
-    except FileNotFoundError as fnf_error:
-        logging.error(f"File not found: {fnf_error}")
-        sys.exit(1)
     except Exception as e:
         logging.error(f"An unexpected error occurred: {e}")
         sys.exit(1)
 
     logging.info("Data processing script completed successfully.")
-    print("Data downloaded and saved as a CSV file.")
 
 
 if __name__ == "__main__":
