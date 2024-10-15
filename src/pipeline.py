@@ -27,11 +27,12 @@ VALUES_TO_REPLACE = [
 
 def load_data():
     """Attempts to load data from various sources with a fallback to an empty DataFrame."""
+    print("looking for file")
     file_paths = [
-        "../data/traffic_accidents.csv",
-        # "../data/traffic_accidents.parquet",
+        # "../data/.csv",
+        "../data/denver_accidents.parquet",
         # "/kaggle/input/denver-traffic-accidents/denver_accidents.parquet",
-        # "/kaggle/input/denver-traffic-accidents/traffic_accidents.csv",
+        # "/kaggle/input/denver-traffic-accidents/denver_accidents.csv",
     ]
 
     for path in file_paths:
@@ -122,6 +123,7 @@ def convert_columns_to_category(df, category_cols):
 def main():
     df, load_message = load_data()
     print(load_message)
+    print(df.head())
 
     df = (
         df.pipe(format_column_names)
