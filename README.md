@@ -1,7 +1,7 @@
 # DenverDriving
 Project Description: This is an end-to-end project. It gets data from [City of Denver Open Data Catalog](http://data.denvergov.org) does some processing of the data, and uploads the data to Kaggle as the [Denver Traffic Accidents dataset](https://www.kaggle.com/datasets/hrokrin/denver-traffic-accidents).
 
-Quick note: I'm expanding the project but haven't finalized how updating will work. I may go with a GitHub Action but might additionally layer in Airflow and Docker. The display is also up in the air. I'll leave Jupyter notebooks as an option but, depending on hosting options, I think Panel looks attractive.
+Note: I'm expanding the project but haven't finalized how updating will work. I may go with a GitHub Action but might additionally layer in Airflow and Docker. The display is also up in the air. I'll leave Jupyter notebooks as an option but, depending on hosting options, I think Panel looks attractive. Unfortunately, the long pole in the tent to automate this I need to figure out dynamic web pages if I want to get around the 2000 record limit of ESRI's database, which Denver has recently gone to for serving data.
 <br><br> 
 
 ## Table of Contents
