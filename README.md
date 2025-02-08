@@ -68,6 +68,7 @@ Still, there are a few takeaways.
 
 ## Project status
 1. Kaggle: Dataset and accompanying notebook uploaded with infrequent updates
-2. GitHub: Expanding and refactoring
+2. Acquiring update infomation: 😖
+3. GitHub: Expanding and refactoring
 
 [Top ](#table-of-contents)
